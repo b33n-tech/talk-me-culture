@@ -562,35 +562,19 @@
     gap: 0.8rem;
     transition: opacity 0.4s, transform 0.4s;
   }
-
   .conn-panel.fade-out {
     opacity: 0;
     transform: translateX(-50%) translateY(-8px);
   }
-
-  .conn-panel-icon {
-    font-size: 1.4rem;
-    flex-shrink: 0;
-    line-height: 1;
-    margin-top: 0.1rem;
-  }
-
+  .conn-panel-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1; margin-top: 0.1rem; }
   .conn-panel-body { flex: 1; min-width: 0; }
-
-  .conn-panel-title {
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--ink);
-    margin-bottom: 0.2rem;
-  }
-
+  .conn-panel-title { font-size: 0.82rem; font-weight: 600; color: var(--ink); margin-bottom: 0.2rem; }
   .conn-panel-msg {
     font-size: 0.76rem;
     color: var(--ink-muted);
     word-break: break-word;
-    font-family: 'DM Mono', monospace, 'DM Sans', sans-serif;
+    font-family: monospace, 'DM Sans', sans-serif;
   }
-
   .conn-panel-retry {
     margin-top: 0.6rem;
     font-size: 0.76rem;
@@ -605,20 +589,18 @@
     gap: 0.3rem;
     transition: all 0.15s;
   }
-
   .conn-panel-retry:hover { border-color: var(--accent); color: var(--accent); }
-
-  /* border-left color by state */
   .conn-panel.loading       { border-left: 4px solid #c9a227; }
   .conn-panel.connected     { border-left: 4px solid var(--success); }
   .conn-panel.error_config  { border-left: 4px solid var(--accent); }
   .conn-panel.error_network { border-left: 4px solid var(--accent); }
   .conn-panel.error_query   { border-left: 4px solid #c9a227; }
-
   .conn-panel.connected .conn-panel-title { color: var(--success); }
   .conn-panel.error_config .conn-panel-title,
   .conn-panel.error_network .conn-panel-title { color: var(--accent); }
 </style>
+
+</head>
 <body>
 
 <!-- ══════════════════════════════════════════════
@@ -718,6 +700,7 @@
   </div>
 </div>
 
+
 <!-- CONNEXION PANEL -->
 <div class="conn-panel loading" id="conn-panel" style="display:none">
   <div class="conn-panel-icon" id="conn-icon">⏳</div>
@@ -732,6 +715,7 @@
 <div class="toast" id="toast"></div>
 
 <script>
+
 /* ═══════════════════════════════════════════
    TRANSLATIONS UI
 ═══════════════════════════════════════════ */
@@ -1677,6 +1661,7 @@ const MSG = {
   ]
 };
 
+
 /* ═══════════════════════════════════════════
    SUPABASE CONFIG — À REMPLIR ICI
 ═══════════════════════════════════════════ */
@@ -1693,9 +1678,6 @@ const STATE = {
   lastMsgId: 0, connected: false, messages: [], fontSize: 16
 };
 
-/* ═══════════════════════════════════════════
-   PERSISTENCE
-═══════════════════════════════════════════ */
 function save() {
   localStorage.setItem('ponti_state', JSON.stringify({
     lang: STATE.lang, name: STATE.name, conv: STATE.conv,
@@ -1714,9 +1696,6 @@ function load() {
 }
 function genUserId() { return 'U' + Math.random().toString(36).slice(2,10).toUpperCase(); }
 
-/* ═══════════════════════════════════════════
-   UI LANG
-═══════════════════════════════════════════ */
 function applyLang() {
   const lang = document.getElementById('inp-lang').value;
   STATE.lang = lang;
@@ -1733,9 +1712,6 @@ function applyLang() {
   document.querySelector('.tagline').textContent      = t.logoTag;
 }
 
-/* ═══════════════════════════════════════════
-   FONT SIZE
-═══════════════════════════════════════════ */
 function changeFont(delta) {
   STATE.fontSize = Math.min(24, Math.max(12, STATE.fontSize + delta));
   document.documentElement.style.setProperty('--font-size-base', STATE.fontSize + 'px');
@@ -1744,7 +1720,6 @@ function changeFont(delta) {
 
 /* ═══════════════════════════════════════════
    PANNEAU DE CONNEXION
-   États : loading | connected | error_config | error_network | error_query
 ═══════════════════════════════════════════ */
 function setConnPanel(state, detail) {
   const panel = document.getElementById('conn-panel');
@@ -1752,25 +1727,20 @@ function setConnPanel(state, detail) {
   const title = document.getElementById('conn-title');
   const msg   = document.getElementById('conn-msg');
   const retry = document.getElementById('conn-retry');
-
   panel.className = 'conn-panel ' + state;
   retry.style.display = 'none';
-
   const labels = {
-    loading:       { ico:'⏳', tit:'Connexion en cours…',       txt: detail || 'Chargement du SDK Supabase.' },
-    connected:     { ico:'✅', tit:'Connecté',                   txt: detail || 'Base de données accessible.' },
-    error_config:  { ico:'⚙️',  tit:'Erreur de configuration',    txt: detail || 'SUPA_URL ou SUPA_KEY invalide.' },
-    error_network: { ico:'📡', tit:'Erreur réseau',              txt: detail || 'Impossible de joindre Supabase.' },
-    error_query:   { ico:'⚠️',  tit:'Erreur de requête',          txt: detail || "Problème d'accès aux données." },
+    loading:       { ico:'⏳', tit:'Connexion en cours…',     txt: detail || 'Chargement du SDK Supabase.' },
+    connected:     { ico:'✅', tit:'Connecté',                 txt: detail || 'Base de données accessible.' },
+    error_config:  { ico:'⚙️', tit:'Erreur de configuration',  txt: detail || 'SUPA_URL ou SUPA_KEY invalide.' },
+    error_network: { ico:'📡', tit:'Erreur réseau',            txt: detail || 'Impossible de joindre Supabase.' },
+    error_query:   { ico:'⚠️', tit:'Erreur de requête',        txt: detail || "Problème d'accès aux données." },
   };
   const l = labels[state] || labels.error_query;
   icon.textContent  = l.ico;
   title.textContent = l.tit;
   msg.textContent   = l.txt;
-
   if (state.startsWith('error')) retry.style.display = 'inline-flex';
-
-  // Auto-hide 3s after successful connection
   if (state === 'connected') {
     setTimeout(() => {
       panel.classList.add('fade-out');
@@ -1778,11 +1748,10 @@ function setConnPanel(state, detail) {
     }, 3000);
   }
 }
-
 function showConnPanel() {
-  const panel = document.getElementById('conn-panel');
-  panel.style.display = 'flex';
-  panel.classList.remove('fade-out');
+  const p = document.getElementById('conn-panel');
+  p.style.display = 'flex';
+  p.classList.remove('fade-out');
 }
 
 /* ═══════════════════════════════════════════
@@ -1793,8 +1762,7 @@ function startChat() {
   const conv = document.getElementById('inp-conv').value.trim().toUpperCase();
   if (!name) { showToast('⚠ ' + (STATE.lang === 'fr' ? 'Entrez votre prénom.' : 'Enter your name.')); return; }
   if (!conv || conv.length < 2) { showToast('⚠ ' + (STATE.lang === 'fr' ? 'Code de session requis.' : 'Session code required.')); return; }
-  STATE.name = name;
-  STATE.conv = conv;
+  STATE.name = name; STATE.conv = conv;
   if (!STATE.userId) STATE.userId = genUserId();
   save();
   document.getElementById('screen-setup').classList.remove('active');
@@ -1812,9 +1780,6 @@ function goSetup() {
   applyLang();
 }
 
-/* ═══════════════════════════════════════════
-   CHAT INIT
-═══════════════════════════════════════════ */
 function initChat() {
   const t = UI[STATE.lang];
   document.documentElement.setAttribute('dir', ['ar','fa'].includes(STATE.lang) ? 'rtl' : 'ltr');
@@ -1827,9 +1792,6 @@ function initChat() {
   setupPolling();
 }
 
-/* ═══════════════════════════════════════════
-   CATEGORIES + MESSAGE GRID
-═══════════════════════════════════════════ */
 function buildCategories() {
   const cats = MSG[STATE.lang] || MSG.fr;
   const strip = document.getElementById('category-strip');
@@ -1845,18 +1807,14 @@ function buildCategories() {
 }
 
 function selectCat(i) {
-  STATE.selectedCat = i;
-  STATE.selectedMsg = null;
-  updateSendPreview();
+  STATE.selectedCat = i; STATE.selectedMsg = null; updateSendPreview();
   document.querySelectorAll('.cat-pill').forEach((p,j) => p.classList.toggle('active', j===i));
   const cats = MSG[STATE.lang] || MSG.fr;
   const grid = document.getElementById('messages-grid');
   grid.innerHTML = '';
   cats[i].items.forEach(item => {
     const el = document.createElement('button');
-    el.className = 'msg-item';
-    el.textContent = item.t;
-    el.dataset.id  = item.id;
+    el.className = 'msg-item'; el.textContent = item.t; el.dataset.id = item.id;
     el.onclick = () => selectMsg(item, el);
     grid.appendChild(el);
   });
@@ -1864,9 +1822,7 @@ function selectCat(i) {
 
 function selectMsg(item, el) {
   document.querySelectorAll('.msg-item').forEach(e => e.classList.remove('selected'));
-  el.classList.add('selected');
-  STATE.selectedMsg = item;
-  updateSendPreview();
+  el.classList.add('selected'); STATE.selectedMsg = item; updateSendPreview();
 }
 
 function updateSendPreview() {
@@ -1874,93 +1830,56 @@ function updateSendPreview() {
   const txt  = document.getElementById('sel-prev-text');
   const btn  = document.getElementById('btn-send');
   if (STATE.selectedMsg) {
-    prev.classList.add('has-msg');
-    txt.textContent = STATE.selectedMsg.t;
-    btn.disabled = false;
+    prev.classList.add('has-msg'); txt.textContent = STATE.selectedMsg.t; btn.disabled = false;
   } else {
-    prev.classList.remove('has-msg');
-    txt.textContent = UI[STATE.lang].sendPlaceholder;
-    btn.disabled = true;
+    prev.classList.remove('has-msg'); txt.textContent = UI[STATE.lang].sendPlaceholder; btn.disabled = true;
   }
 }
 
 /* ═══════════════════════════════════════════
-   SUPABASE — VALIDATION CONFIG
+   SUPABASE — VALIDATION + CONNEXION
 ═══════════════════════════════════════════ */
 function validateSupaConfig() {
-  const urlOk = typeof SUPA_URL === 'string'
-             && SUPA_URL.startsWith('https://')
-             && SUPA_URL.includes('.supabase.co');
-  const keyOk = typeof SUPA_KEY === 'string'
-             && SUPA_KEY.startsWith('eyJ')
-             && SUPA_KEY.length > 100;
+  const urlOk = typeof SUPA_URL === 'string' && SUPA_URL.startsWith('https://') && SUPA_URL.includes('.supabase.co');
+  const keyOk = typeof SUPA_KEY === 'string' && SUPA_KEY.startsWith('eyJ') && SUPA_KEY.length > 100;
   if (!urlOk) return { ok: false, reason: 'SUPA_URL invalide — doit être https://xxxx.supabase.co' };
-  if (!keyOk) return { ok: false, reason: 'SUPA_KEY invalide — doit commencer par eyJ… (JWT anon)' };
+  if (!keyOk) return { ok: false, reason: 'SUPA_KEY invalide — doit commencer par eyJ… (JWT anon, > 100 chars)' };
   return { ok: true };
 }
 
-/* ═══════════════════════════════════════════
-   SUPABASE POLLING
-═══════════════════════════════════════════ */
 function setupPolling() {
   if (STATE.pollInterval) { clearInterval(STATE.pollInterval); STATE.pollInterval = null; }
   showConnPanel();
   setConnPanel('loading', 'Vérification de la configuration…');
-
-  // Fail fast if credentials look wrong
   const check = validateSupaConfig();
-  if (!check.ok) {
-    setConnPanel('error_config', check.reason);
-    setStatus('waiting');
-    return;
-  }
-
+  if (!check.ok) { setConnPanel('error_config', check.reason); setStatus('waiting'); return; }
   setConnPanel('loading', 'Chargement du SDK Supabase…');
   if (!window.supabase) {
     const s = document.createElement('script');
     s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';
     s.onload  = () => connectAndPoll();
-    s.onerror = () => {
-      setConnPanel('error_network', 'Impossible de charger le SDK Supabase (réseau / CDN inaccessible).');
-      setStatus('waiting');
-    };
+    s.onerror = () => { setConnPanel('error_network', 'SDK Supabase inaccessible (réseau / CDN).'); setStatus('waiting'); };
     document.head.appendChild(s);
-  } else {
-    connectAndPoll();
-  }
+  } else { connectAndPoll(); }
 }
 
 async function connectAndPoll() {
   setConnPanel('loading', 'Connexion à Supabase…');
   try {
     STATE.supaClient = window.supabase.createClient(SUPA_URL, SUPA_KEY);
-
-    // Probe: vraie requête pour valider les credentials et le réseau
-    const { data, error } = await STATE.supaClient
-      .from('ponti_messages')
-      .select('id')
-      .limit(1);
-
+    const { data, error } = await STATE.supaClient.from('ponti_messages').select('id').limit(1);
     if (error) {
-      const msg = error.message || JSON.stringify(error);
-      const isAuth = error.code === 'PGRST301'
-                  || msg.toLowerCase().includes('jwt')
-                  || msg.toLowerCase().includes('apikey')
-                  || msg.toLowerCase().includes('invalid');
-      setConnPanel(isAuth ? 'error_config' : 'error_network',
-        (isAuth ? 'Authentification refusée : ' : 'Erreur Supabase : ') + msg);
-      setStatus('waiting');
-      return;
+      const m = error.message || JSON.stringify(error);
+      const isAuth = error.code === 'PGRST301' || m.toLowerCase().includes('jwt') || m.toLowerCase().includes('apikey') || m.toLowerCase().includes('invalid');
+      setConnPanel(isAuth ? 'error_config' : 'error_network', (isAuth ? 'Auth refusée : ' : 'Erreur Supabase : ') + m);
+      setStatus('waiting'); return;
     }
-
-    // ✅ OK
-    setConnPanel('connected', 'Base accessible · session ' + STATE.conv);
+    setConnPanel('connected', 'Session : ' + STATE.conv);
     setStatus('connected');
     await loadHistory();
     STATE.pollInterval = setInterval(pollNewMessages, 3000);
-
   } catch(e) {
-    setConnPanel('error_network', 'Exception réseau : ' + e.message);
+    setConnPanel('error_network', 'Exception : ' + e.message);
     setStatus('waiting');
   }
 }
@@ -1968,158 +1887,98 @@ async function connectAndPoll() {
 async function loadHistory() {
   try {
     const { data, error } = await STATE.supaClient
-      .from('ponti_messages')
-      .select('*')
-      .eq('conv_id', STATE.conv)
-      .order('created_at', { ascending: true })
-      .limit(100);
-
-    if (error) {
-      showConnPanel();
-      setConnPanel('error_query', 'Historique : ' + error.message);
-      return;
-    }
+      .from('ponti_messages').select('*').eq('conv_id', STATE.conv)
+      .order('created_at', { ascending: true }).limit(100);
+    if (error) { showConnPanel(); setConnPanel('error_query', 'Historique : ' + error.message); return; }
     if (data && data.length) {
       data.forEach(row => renderMsg(row, false));
       STATE.lastMsgId = data[data.length - 1].id;
     }
-  } catch(e) {
-    showConnPanel();
-    setConnPanel('error_network', 'Historique inaccessible : ' + e.message);
-  }
+  } catch(e) { showConnPanel(); setConnPanel('error_network', 'Historique : ' + e.message); }
 }
 
 async function pollNewMessages() {
   if (!STATE.supaClient) return;
   try {
-    let q = STATE.supaClient
-      .from('ponti_messages')
-      .select('*')
-      .eq('conv_id', STATE.conv)
-      .order('created_at', { ascending: true });
+    let q = STATE.supaClient.from('ponti_messages').select('*')
+      .eq('conv_id', STATE.conv).order('created_at', { ascending: true });
     if (STATE.lastMsgId) q = q.gt('id', STATE.lastMsgId);
-
     const { data, error } = await q;
-    if (error) {
-      console.warn('poll error', error.message);
-      return; // silent — poll again next tick
-    }
+    if (error) { console.warn('poll:', error.message); return; }
     if (data && data.length) {
-      data.forEach(row => {
-        if (row.sender_id !== STATE.userId) renderMsg(row, true);
-      });
+      data.forEach(row => { if (row.sender_id !== STATE.userId) renderMsg(row, true); });
       STATE.lastMsgId = data[data.length - 1].id;
     }
-  } catch(e) { console.warn('poll exception', e.message); }
+  } catch(e) { console.warn('poll exception:', e.message); }
 }
 
-/* ═══════════════════════════════════════════
-   SEND
-═══════════════════════════════════════════ */
 async function sendMessage() {
   if (!STATE.selectedMsg) return;
   const msg = STATE.selectedMsg;
   const row = {
-    conv_id:     STATE.conv,
-    sender_id:   STATE.userId,
-    sender_name: STATE.name,
-    sender_lang: STATE.lang,
-    msg_id:      msg.id,
-    msg_text:    msg.t
+    conv_id: STATE.conv, sender_id: STATE.userId, sender_name: STATE.name,
+    sender_lang: STATE.lang, msg_id: msg.id, msg_text: msg.t
   };
-
-  // Optimistic render
   renderMsg({ ...row, created_at: new Date().toISOString() }, false, true);
-
   STATE.selectedMsg = null;
   document.querySelectorAll('.msg-item').forEach(e => e.classList.remove('selected'));
   updateSendPreview();
-
   if (!STATE.supaClient) { showToast('⏳ Connexion en cours…'); return; }
-
   try {
     const { error } = await STATE.supaClient.from('ponti_messages').insert(row);
     if (error) {
-      const detail = error.message || JSON.stringify(error);
-      showToast('❌ Envoi échoué : ' + detail);
-      showConnPanel();
-      setConnPanel('error_query', 'Insert refusé : ' + detail);
+      const d = error.message || JSON.stringify(error);
+      showToast('❌ Envoi échoué : ' + d);
+      showConnPanel(); setConnPanel('error_query', 'Insert refusé : ' + d);
       console.error('insert error', error);
     }
-  } catch(e) {
-    showToast('❌ Envoi échoué : ' + e.message);
-    console.error('insert exception', e);
-  }
+  } catch(e) { showToast('❌ ' + e.message); console.error('insert exception', e); }
 }
 
-/* ═══════════════════════════════════════════
-   RENDER MESSAGE
-═══════════════════════════════════════════ */
 function renderMsg(row, animate, isMine) {
   const area  = document.getElementById('messages-area');
   const empty = document.getElementById('empty-state');
   if (empty) empty.style.display = 'none';
-
   const mine = isMine !== undefined ? isMine : (row.sender_id === STATE.userId);
-
   let equiv = null;
   if (!mine && row.msg_id) {
-    const userCats = MSG[STATE.lang] || MSG.fr;
-    for (const cat of userCats) {
+    for (const cat of (MSG[STATE.lang] || MSG.fr)) {
       const item = cat.items.find(i => i.id === row.msg_id);
       if (item) { equiv = item.t; break; }
     }
   }
-
   const row_el = document.createElement('div');
   row_el.className = 'msg-row ' + (mine ? 'mine' : 'theirs');
   if (animate) row_el.style.animation = 'fadeUp 0.25s ease';
-
   const bubble = document.createElement('div');
-  bubble.className = 'msg-bubble';
-  bubble.textContent = row.msg_text;
+  bubble.className = 'msg-bubble'; bubble.textContent = row.msg_text;
   row_el.appendChild(bubble);
-
   if (equiv && !mine) {
     const eq = document.createElement('div');
-    eq.className = 'msg-equiv';
-    eq.textContent = '↳ ' + equiv;
+    eq.className = 'msg-equiv'; eq.textContent = '↳ ' + equiv;
     row_el.appendChild(eq);
   }
-
   const meta = document.createElement('div');
   meta.className = 'msg-meta';
   const time = new Date(row.created_at).toLocaleTimeString(STATE.lang, {hour:'2-digit', minute:'2-digit'});
   meta.textContent = (mine ? (UI[STATE.lang].youSent || 'Vous') : (row.sender_name || '')) + ' · ' + time;
   row_el.appendChild(meta);
-
   area.appendChild(row_el);
   area.scrollTop = area.scrollHeight;
 }
 
-/* ═══════════════════════════════════════════
-   STATUS DOT (header)
-═══════════════════════════════════════════ */
 function setStatus(s) {
-  const dot   = document.getElementById('status-dot');
-  const label = document.getElementById('status-label');
-  dot.className = 'status-dot ' + s;
-  label.textContent = s === 'connected' ? UI[STATE.lang].statusConnected : UI[STATE.lang].statusWaiting;
+  document.getElementById('status-dot').className = 'status-dot ' + s;
+  document.getElementById('status-label').textContent = s === 'connected' ? UI[STATE.lang].statusConnected : UI[STATE.lang].statusWaiting;
 }
 
-/* ═══════════════════════════════════════════
-   TOAST
-═══════════════════════════════════════════ */
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 4000);
 }
 
-/* ═══════════════════════════════════════════
-   BOOT
-═══════════════════════════════════════════ */
+/* BOOT */
 load();
 document.getElementById('inp-lang').value = STATE.lang;
 document.getElementById('inp-name').value = STATE.name;
@@ -2128,20 +1987,6 @@ document.documentElement.style.setProperty('--font-size-base', STATE.fontSize + 
 applyLang();
 </script>
 
-<!-- ══════════════════════════════════════════════
-     SUPABASE SQL — reset complet
-     
-     drop table if exists ponti_messages;
-     create table ponti_messages (
-       id          bigserial primary key,
-       created_at  timestamptz default now(),
-       conv_id     text not null,
-       sender_id   text not null,
-       sender_name text,
-       sender_lang text,
-       msg_id      text,
-       msg_text    text
-     );
-══════════════════════════════════════════════ -->
+<!-- SQL: drop table if exists ponti_messages; create table ponti_messages (id bigserial primary key, created_at timestamptz default now(), conv_id text not null, sender_id text not null, sender_name text, sender_lang text, msg_id text, msg_text text); -->
 </body>
 </html>
