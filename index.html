@@ -587,24 +587,6 @@
 
     <hr class="divider">
 
-    <!-- Supabase config -->
-    <details class="supabase-section" id="supabase-details">
-      <summary id="lbl-supa">⚙️ Configuration Supabase</summary>
-      <div class="supabase-fields">
-        <div class="field-group" style="margin-top:0.8rem">
-          <label>URL Supabase</label>
-          <input type="text" id="inp-supa-url" placeholder="https://nzsxcpmzlrznrpasnonc.supabase.co">
-        </div>
-        <div class="field-group">
-          <label>Clé anon</label>
-          <input type="password" id="inp-supa-key" placeholder="sb_publishable_9DsidpyHkHOI3hf8fGwN7Q_uUpWdkDI">
-        </div>
-        <div class="hint" id="hint-supa">Ces informations sont stockées localement sur votre appareil.</div>
-      </div>
-    </details>
-
-    <hr class="divider">
-
     <button class="btn btn-primary" onclick="startChat()" id="btn-start">
       Commencer →
     </button>
@@ -669,81 +651,75 @@
 ═══════════════════════════════════════════ */
 const UI = {
   fr: {
-    name:"Votre prénom", lang:"Votre langue", conv:"Code conversation",
+    name:"Votre prénom", lang:"Votre langue", conv:"Code de session",
     hintConv:"Le code partagé avec votre interlocuteur·rice.",
-    fontsize:"Taille du texte", supa:"⚙️ Configuration Supabase",
-    hintSupa:"Ces informations sont stockées localement sur votre appareil.",
-    start:"Commencer →", back:"⚙",
-    emptyWait:"En attente de la connexion…",
+    fontsize:"Taille du texte",
+    start:"Commencer →",
+    emptyWait:"En attente de messages…",
     emptyConnected:"Choisissez un message à envoyer.",
     statusWaiting:"En attente…", statusConnected:"Connecté",
     sendPlaceholder:"Sélectionnez un message…",
-    youSent:"Vous", theySent:"",
+    youSent:"Vous",
     logoTag:"Des ponts, pas des murs."
   },
   en: {
-    name:"Your first name", lang:"Your language", conv:"Conversation code",
+    name:"Your first name", lang:"Your language", conv:"Session code",
     hintConv:"The shared code with your contact.",
-    fontsize:"Text size", supa:"⚙️ Supabase configuration",
-    hintSupa:"This information is stored locally on your device.",
-    start:"Start →", back:"⚙",
-    emptyWait:"Waiting for connection…",
+    fontsize:"Text size",
+    start:"Start →",
+    emptyWait:"Waiting for messages…",
     emptyConnected:"Choose a message to send.",
     statusWaiting:"Waiting…", statusConnected:"Connected",
     sendPlaceholder:"Select a message…",
-    youSent:"You", theySent:"",
+    youSent:"You",
     logoTag:"Bridges, not walls."
   },
   es: {
-    name:"Tu nombre", lang:"Tu idioma", conv:"Código de conversación",
+    name:"Tu nombre", lang:"Tu idioma", conv:"Código de sesión",
     hintConv:"El código compartido con tu interlocutor/a.",
-    fontsize:"Tamaño del texto", supa:"⚙️ Configuración Supabase",
-    hintSupa:"Esta información se almacena localmente en tu dispositivo.",
-    start:"Empezar →", back:"⚙",
-    emptyWait:"Esperando conexión…",
+    fontsize:"Tamaño del texto",
+    start:"Empezar →",
+    emptyWait:"Esperando mensajes…",
     emptyConnected:"Elige un mensaje para enviar.",
     statusWaiting:"Esperando…", statusConnected:"Conectado",
     sendPlaceholder:"Selecciona un mensaje…",
-    youSent:"Tú", theySent:"",
+    youSent:"Tú",
     logoTag:"Puentes, no muros."
   },
   zh: {
-    name:"您的名字", lang:"您的语言", conv:"对话代码",
+    name:"您的名字", lang:"您的语言", conv:"会话代码",
     hintConv:"与对话伙伴共享的代码。",
-    fontsize:"文字大小", supa:"⚙️ Supabase 配置",
-    hintSupa:"此信息存储在您的设备本地。",
-    start:"开始 →", back:"⚙",
-    emptyWait:"等待连接中…",
+    fontsize:"文字大小",
+    start:"开始 →",
+    emptyWait:"等待消息中…",
     emptyConnected:"请选择要发送的消息。",
     statusWaiting:"等待中…", statusConnected:"已连接",
     sendPlaceholder:"选择一条消息…",
-    youSent:"您", theySent:"",
+    youSent:"您",
     logoTag:"架桥，而非筑墙。"
   },
   ar: {
-    name:"اسمك الأول", lang:"لغتك", conv:"رمز المحادثة",
+    name:"اسمك الأول", lang:"لغتك", conv:"رمز الجلسة",
     hintConv:"الرمز المشترك مع محاورك.",
-    fontsize:"حجم النص", supa:"⚙️ إعداد Supabase",
-    hintSupa:"يتم تخزين هذه المعلومات محلياً على جهازك.",
-    start:"ابدأ →", back:"⚙",
-    emptyWait:"في انتظار الاتصال…",
+    fontsize:"حجم النص",
+    start:"ابدأ →",
+    emptyWait:"في انتظار الرسائل…",
     emptyConnected:"اختر رسالة لإرسالها.",
     statusWaiting:"في الانتظار…", statusConnected:"متصل",
     sendPlaceholder:"اختر رسالة…",
-    youSent:"أنت", theySent:"",
+    youSent:"أنت",
     logoTag:"جسور، لا جدران."
   },
   fa: {
-    name:"نام شما", lang:"زبان شما", conv:"کد مکالمه",
+    name:"نام شما", lang:"زبان شما", conv:"کد جلسه",
     hintConv:"کد مشترک با طرف مقابل.",
-    fontsize:"اندازه متن", supa:"⚙️ تنظیمات Supabase",
-    hintSupa:"این اطلاعات به صورت محلی روی دستگاه شما ذخیره می‌شود.",
-    start:"شروع →", back:"⚙",
-    emptyWait:"در انتظار اتصال…",
+    fontsize:"اندازه متن",
+    start:"شروع →",
+    emptyWait:"در انتظار پیام‌ها…",
     emptyConnected:"یک پیام برای ارسال انتخاب کنید.",
     statusWaiting:"در انتظار…", statusConnected:"متصل",
     sendPlaceholder:"یک پیام انتخاب کنید…",
-    youSent:"شما", theySent:"",
+    youSent:"شما",
     logoTag:"پل، نه دیوار."
   }
 };
@@ -1616,6 +1592,12 @@ const MSG = {
 };
 
 /* ═══════════════════════════════════════════
+   SUPABASE CONFIG — À REMPLIR ICI
+═══════════════════════════════════════════ */
+const SUPA_URL = 'https://nzsxcpmzlrznrpasnonc.supabase.co';   // ← remplacer
+const SUPA_KEY = 'sb_publishable_9DsidpyHkHOI3hf8fGwN7Q_uUpWdkDI';                     // ← remplacer
+
+/* ═══════════════════════════════════════════
    STATE
 ═══════════════════════════════════════════ */
 const STATE = {
@@ -1623,12 +1605,11 @@ const STATE = {
   name: '',
   conv: '',
   userId: null,
-  supaUrl: '',
-  supaKey: '',
   selectedMsg: null,
   selectedCat: 0,
   supaClient: null,
-  channel: null,
+  pollInterval: null,
+  lastMsgId: 0,
   connected: false,
   messages: [],
   fontSize: 16
@@ -1640,8 +1621,7 @@ const STATE = {
 function save() {
   localStorage.setItem('ponti_state', JSON.stringify({
     lang: STATE.lang, name: STATE.name, conv: STATE.conv,
-    userId: STATE.userId, supaUrl: STATE.supaUrl, supaKey: STATE.supaKey,
-    fontSize: STATE.fontSize
+    userId: STATE.userId, fontSize: STATE.fontSize
   }));
 }
 
@@ -1652,8 +1632,6 @@ function load() {
     if (s.name)     STATE.name    = s.name;
     if (s.conv)     STATE.conv    = s.conv;
     if (s.userId)   STATE.userId  = s.userId;
-    if (s.supaUrl)  STATE.supaUrl = s.supaUrl;
-    if (s.supaKey)  STATE.supaKey = s.supaKey;
     if (s.fontSize) STATE.fontSize = s.fontSize;
   } catch(e) {}
 }
@@ -1677,8 +1655,6 @@ function applyLang() {
   document.getElementById('lbl-conv').textContent    = t.conv;
   document.getElementById('hint-conv').textContent   = t.hintConv;
   document.getElementById('lbl-fontsize').textContent= t.fontsize;
-  document.getElementById('lbl-supa').textContent    = t.supa;
-  document.getElementById('hint-supa').textContent   = t.hintSupa;
   document.getElementById('btn-start').textContent   = t.start;
   document.querySelector('.tagline').textContent     = t.logoTag;
 }
@@ -1698,16 +1674,12 @@ function changeFont(delta) {
 function startChat() {
   const name = document.getElementById('inp-name').value.trim();
   const conv = document.getElementById('inp-conv').value.trim().toUpperCase();
-  const url  = document.getElementById('inp-supa-url').value.trim();
-  const key  = document.getElementById('inp-supa-key').value.trim();
 
   if (!name) { showToast('⚠ ' + (STATE.lang === 'fr' ? 'Entrez votre prénom.' : 'Enter your name.')); return; }
-  if (!conv || conv.length < 2) { showToast('⚠ ' + (STATE.lang === 'fr' ? 'Code conversation requis.' : 'Conversation code required.')); return; }
+  if (!conv || conv.length < 2) { showToast('⚠ ' + (STATE.lang === 'fr' ? 'Code de session requis.' : 'Session code required.')); return; }
 
-  STATE.name    = name;
-  STATE.conv    = conv;
-  STATE.supaUrl = url;
-  STATE.supaKey = key;
+  STATE.name = name;
+  STATE.conv = conv;
   if (!STATE.userId) STATE.userId = genUserId();
   save();
 
@@ -1717,15 +1689,12 @@ function startChat() {
 }
 
 function goSetup() {
-  if (STATE.channel) STATE.channel.unsubscribe();
+  if (STATE.pollInterval) clearInterval(STATE.pollInterval);
   document.getElementById('screen-chat').classList.remove('active');
   document.getElementById('screen-setup').classList.add('active');
-  // prefill
-  document.getElementById('inp-name').value  = STATE.name;
-  document.getElementById('inp-lang').value  = STATE.lang;
-  document.getElementById('inp-conv').value  = STATE.conv;
-  document.getElementById('inp-supa-url').value = STATE.supaUrl;
-  document.getElementById('inp-supa-key').value = STATE.supaKey;
+  document.getElementById('inp-name').value = STATE.name;
+  document.getElementById('inp-lang').value = STATE.lang;
+  document.getElementById('inp-conv').value = STATE.conv;
   applyLang();
 }
 
@@ -1744,7 +1713,7 @@ function initChat() {
   document.getElementById('status-label').textContent= t.statusWaiting;
 
   buildCategories();
-  setupRealtime();
+  setupPolling();
 }
 
 /* ═══════════════════════════════════════════
@@ -1807,35 +1776,30 @@ function updateSendPreview() {
 }
 
 /* ═══════════════════════════════════════════
-   SUPABASE REALTIME
+   SUPABASE POLLING
 ═══════════════════════════════════════════ */
-function setupRealtime() {
-  if (!STATE.supaUrl || !STATE.supaKey) {
-    setStatus('waiting');
-    showToast('ℹ️ Mode démo — configurez Supabase pour la connexion réelle.');
-    loadLocalHistory();
-    return;
-  }
-
-  // Dynamically load Supabase SDK
+function setupPolling() {
+  // Load Supabase SDK then connect
   if (!window.supabase) {
     const s = document.createElement('script');
     s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';
-    s.onload = () => connectSupabase();
-    s.onerror = () => { showToast('❌ Supabase SDK non chargé.'); };
+    s.onload = () => connectAndPoll();
+    s.onerror = () => showToast('❌ Erreur chargement SDK.');
     document.head.appendChild(s);
   } else {
-    connectSupabase();
+    connectAndPoll();
   }
 }
 
-function connectSupabase() {
+function connectAndPoll() {
   try {
-    STATE.supaClient = window.supabase.createClient(STATE.supaUrl, STATE.supaKey);
+    STATE.supaClient = window.supabase.createClient(SUPA_URL, SUPA_KEY);
     loadHistory();
-    subscribeChannel();
+    // Poll every 3 seconds
+    STATE.pollInterval = setInterval(pollNewMessages, 3000);
+    setStatus('connected');
   } catch(e) {
-    showToast('❌ Erreur Supabase : ' + e.message);
+    showToast('❌ Supabase : ' + e.message);
   }
 }
 
@@ -1847,31 +1811,30 @@ async function loadHistory() {
       .eq('conv_id', STATE.conv)
       .order('created_at', { ascending: true })
       .limit(100);
-    if (data) data.forEach(row => renderMsg(row, false));
+    if (data && data.length) {
+      data.forEach(row => renderMsg(row, false));
+      STATE.lastMsgId = data[data.length - 1].id;
+    }
   } catch(e) { console.warn('loadHistory', e); }
 }
 
-function loadLocalHistory() {
-  // Demo mode: nothing to load
-}
-
-function subscribeChannel() {
-  STATE.channel = STATE.supaClient
-    .channel('ponti_' + STATE.conv)
-    .on('postgres_changes', {
-      event: 'INSERT',
-      schema: 'public',
-      table: 'ponti_messages',
-      filter: `conv_id=eq.${STATE.conv}`
-    }, payload => {
-      if (payload.new.sender_id !== STATE.userId) {
-        renderMsg(payload.new, true);
-      }
-    })
-    .subscribe(status => {
-      if (status === 'SUBSCRIBED') setStatus('connected');
-      else setStatus('waiting');
-    });
+async function pollNewMessages() {
+  if (!STATE.supaClient) return;
+  try {
+    let query = STATE.supaClient
+      .from('ponti_messages')
+      .select('*')
+      .eq('conv_id', STATE.conv)
+      .order('created_at', { ascending: true });
+    if (STATE.lastMsgId) query = query.gt('id', STATE.lastMsgId);
+    const { data } = await query;
+    if (data && data.length) {
+      data.forEach(row => {
+        if (row.sender_id !== STATE.userId) renderMsg(row, true);
+      });
+      STATE.lastMsgId = data[data.length - 1].id;
+    }
+  } catch(e) { console.warn('poll', e); }
 }
 
 /* ═══════════════════════════════════════════
@@ -1904,6 +1867,8 @@ async function sendMessage() {
     } catch(e) {
       showToast('❌ Envoi échoué.');
     }
+  } else {
+    showToast('⏳ Connexion en cours…');
   }
 }
 
@@ -1977,24 +1942,15 @@ function showToast(msg) {
    BOOT
 ═══════════════════════════════════════════ */
 load();
-document.getElementById('inp-lang').value  = STATE.lang;
-document.getElementById('inp-name').value  = STATE.name;
-document.getElementById('inp-conv').value  = STATE.conv;
-document.getElementById('inp-supa-url').value = STATE.supaUrl;
-document.getElementById('inp-supa-key').value = STATE.supaKey;
+document.getElementById('inp-lang').value = STATE.lang;
+document.getElementById('inp-name').value = STATE.name;
+document.getElementById('inp-conv').value = STATE.conv;
 document.documentElement.style.setProperty('--font-size-base', STATE.fontSize + 'px');
 applyLang();
-
-// Auto-open Supabase config if not set
-if (!STATE.supaUrl) {
-  document.getElementById('supabase-details').open = true;
-}
 </script>
 
 <!-- ══════════════════════════════════════════════
-     SUPABASE SQL NOTE (in HTML comment for dev reference)
-     
-     Run in Supabase SQL editor to create the table:
+     SUPABASE SQL — À exécuter dans l'éditeur SQL Supabase
      
      create table ponti_messages (
        id          bigserial primary key,
@@ -2007,13 +1963,12 @@ if (!STATE.supaUrl) {
        msg_text    text
      );
      
-     -- Enable Realtime on this table in Supabase dashboard:
-     -- Database > Replication > supabase_realtime > add ponti_messages
-     
-     -- Optional RLS (Row Level Security):
+     -- RLS optionnel :
      alter table ponti_messages enable row level security;
-     create policy "read all" on ponti_messages for select using (true);
+     create policy "read all"   on ponti_messages for select using (true);
      create policy "insert own" on ponti_messages for insert with check (true);
+     
+     -- Pas besoin d'activer le Realtime : on utilise du polling.
 ══════════════════════════════════════════════ -->
 </body>
 </html>
