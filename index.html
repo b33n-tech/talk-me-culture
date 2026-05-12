@@ -541,8 +541,84 @@
   }
 
   .empty-icon { font-size: 2rem; opacity: 0.4; }
+
+  /* ── CONNEXION PANEL ─────────────────────────── */
+  .conn-panel {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    min-width: 280px;
+    max-width: 420px;
+    width: calc(100% - 2rem);
+    background: white;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--cream-border);
+    box-shadow: 0 8px 32px rgba(26,23,20,0.12);
+    padding: 1rem 1.2rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    transition: opacity 0.4s, transform 0.4s;
+  }
+
+  .conn-panel.fade-out {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+  }
+
+  .conn-panel-icon {
+    font-size: 1.4rem;
+    flex-shrink: 0;
+    line-height: 1;
+    margin-top: 0.1rem;
+  }
+
+  .conn-panel-body { flex: 1; min-width: 0; }
+
+  .conn-panel-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 0.2rem;
+  }
+
+  .conn-panel-msg {
+    font-size: 0.76rem;
+    color: var(--ink-muted);
+    word-break: break-word;
+    font-family: 'DM Mono', monospace, 'DM Sans', sans-serif;
+  }
+
+  .conn-panel-retry {
+    margin-top: 0.6rem;
+    font-size: 0.76rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    border: 1.5px solid var(--cream-border);
+    background: var(--cream);
+    cursor: pointer;
+    color: var(--ink-soft);
+    display: none;
+    align-items: center;
+    gap: 0.3rem;
+    transition: all 0.15s;
+  }
+
+  .conn-panel-retry:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* border-left color by state */
+  .conn-panel.loading       { border-left: 4px solid #c9a227; }
+  .conn-panel.connected     { border-left: 4px solid var(--success); }
+  .conn-panel.error_config  { border-left: 4px solid var(--accent); }
+  .conn-panel.error_network { border-left: 4px solid var(--accent); }
+  .conn-panel.error_query   { border-left: 4px solid #c9a227; }
+
+  .conn-panel.connected .conn-panel-title { color: var(--success); }
+  .conn-panel.error_config .conn-panel-title,
+  .conn-panel.error_network .conn-panel-title { color: var(--accent); }
 </style>
-</head>
 <body>
 
 <!-- ══════════════════════════════════════════════
@@ -639,6 +715,16 @@
         <svg width="18" height="18" viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
       </button>
     </div>
+  </div>
+</div>
+
+<!-- CONNEXION PANEL -->
+<div class="conn-panel loading" id="conn-panel" style="display:none">
+  <div class="conn-panel-icon" id="conn-icon">⏳</div>
+  <div class="conn-panel-body">
+    <div class="conn-panel-title" id="conn-title">Connexion en cours…</div>
+    <div class="conn-panel-msg"   id="conn-msg">Chargement du SDK Supabase.</div>
+    <button class="conn-panel-retry" id="conn-retry" onclick="setupPolling()">↺ Réessayer</button>
   </div>
 </div>
 
@@ -1594,25 +1680,17 @@ const MSG = {
 /* ═══════════════════════════════════════════
    SUPABASE CONFIG — À REMPLIR ICI
 ═══════════════════════════════════════════ */
-const SUPA_URL = 'https://nzsxcpmzlrznrpasnonc.supabase.co';   // ← remplacer
-const SUPA_KEY = 'sb_publishable_9DsidpyHkHOI3hf8fGwN7Q_uUpWdkDI';                     // ← remplacer
+const SUPA_URL = 'https://nzsxcpmzlrznrpasnonc.supabase.co';         // ← remplacer par https://xxxx.supabase.co
+const SUPA_KEY = 'sb_publishable_9DsidpyHkHOI3hf8fGwN7Q_uUpWdkDI'; // ← remplacer par la clé anon JWT (eyJ…)
 
 /* ═══════════════════════════════════════════
    STATE
 ═══════════════════════════════════════════ */
 const STATE = {
-  lang: 'fr',
-  name: '',
-  conv: '',
-  userId: null,
-  selectedMsg: null,
-  selectedCat: 0,
-  supaClient: null,
-  pollInterval: null,
-  lastMsgId: 0,
-  connected: false,
-  messages: [],
-  fontSize: 16
+  lang: 'fr', name: '', conv: '', userId: null,
+  selectedMsg: null, selectedCat: 0,
+  supaClient: null, pollInterval: null,
+  lastMsgId: 0, connected: false, messages: [], fontSize: 16
 };
 
 /* ═══════════════════════════════════════════
@@ -1624,21 +1702,17 @@ function save() {
     userId: STATE.userId, fontSize: STATE.fontSize
   }));
 }
-
 function load() {
   try {
     const s = JSON.parse(localStorage.getItem('ponti_state') || '{}');
-    if (s.lang)     STATE.lang    = s.lang;
-    if (s.name)     STATE.name    = s.name;
-    if (s.conv)     STATE.conv    = s.conv;
-    if (s.userId)   STATE.userId  = s.userId;
+    if (s.lang)     STATE.lang     = s.lang;
+    if (s.name)     STATE.name     = s.name;
+    if (s.conv)     STATE.conv     = s.conv;
+    if (s.userId)   STATE.userId   = s.userId;
     if (s.fontSize) STATE.fontSize = s.fontSize;
   } catch(e) {}
 }
-
-function genUserId() {
-  return 'U' + Math.random().toString(36).slice(2,10).toUpperCase();
-}
+function genUserId() { return 'U' + Math.random().toString(36).slice(2,10).toUpperCase(); }
 
 /* ═══════════════════════════════════════════
    UI LANG
@@ -1650,13 +1724,13 @@ function applyLang() {
   const rtl = ['ar','fa'].includes(lang);
   document.documentElement.setAttribute('dir', rtl ? 'rtl' : 'ltr');
   document.documentElement.lang = lang;
-  document.getElementById('lbl-name').textContent    = t.name;
-  document.getElementById('lbl-lang').textContent    = t.lang;
-  document.getElementById('lbl-conv').textContent    = t.conv;
-  document.getElementById('hint-conv').textContent   = t.hintConv;
-  document.getElementById('lbl-fontsize').textContent= t.fontsize;
-  document.getElementById('btn-start').textContent   = t.start;
-  document.querySelector('.tagline').textContent     = t.logoTag;
+  document.getElementById('lbl-name').textContent     = t.name;
+  document.getElementById('lbl-lang').textContent     = t.lang;
+  document.getElementById('lbl-conv').textContent     = t.conv;
+  document.getElementById('hint-conv').textContent    = t.hintConv;
+  document.getElementById('lbl-fontsize').textContent = t.fontsize;
+  document.getElementById('btn-start').textContent    = t.start;
+  document.querySelector('.tagline').textContent      = t.logoTag;
 }
 
 /* ═══════════════════════════════════════════
@@ -1669,20 +1743,60 @@ function changeFont(delta) {
 }
 
 /* ═══════════════════════════════════════════
+   PANNEAU DE CONNEXION
+   États : loading | connected | error_config | error_network | error_query
+═══════════════════════════════════════════ */
+function setConnPanel(state, detail) {
+  const panel = document.getElementById('conn-panel');
+  const icon  = document.getElementById('conn-icon');
+  const title = document.getElementById('conn-title');
+  const msg   = document.getElementById('conn-msg');
+  const retry = document.getElementById('conn-retry');
+
+  panel.className = 'conn-panel ' + state;
+  retry.style.display = 'none';
+
+  const labels = {
+    loading:       { ico:'⏳', tit:'Connexion en cours…',       txt: detail || 'Chargement du SDK Supabase.' },
+    connected:     { ico:'✅', tit:'Connecté',                   txt: detail || 'Base de données accessible.' },
+    error_config:  { ico:'⚙️',  tit:'Erreur de configuration',    txt: detail || 'SUPA_URL ou SUPA_KEY invalide.' },
+    error_network: { ico:'📡', tit:'Erreur réseau',              txt: detail || 'Impossible de joindre Supabase.' },
+    error_query:   { ico:'⚠️',  tit:'Erreur de requête',          txt: detail || "Problème d'accès aux données." },
+  };
+  const l = labels[state] || labels.error_query;
+  icon.textContent  = l.ico;
+  title.textContent = l.tit;
+  msg.textContent   = l.txt;
+
+  if (state.startsWith('error')) retry.style.display = 'inline-flex';
+
+  // Auto-hide 3s after successful connection
+  if (state === 'connected') {
+    setTimeout(() => {
+      panel.classList.add('fade-out');
+      setTimeout(() => { panel.style.display = 'none'; }, 400);
+    }, 3000);
+  }
+}
+
+function showConnPanel() {
+  const panel = document.getElementById('conn-panel');
+  panel.style.display = 'flex';
+  panel.classList.remove('fade-out');
+}
+
+/* ═══════════════════════════════════════════
    SETUP → CHAT
 ═══════════════════════════════════════════ */
 function startChat() {
   const name = document.getElementById('inp-name').value.trim();
   const conv = document.getElementById('inp-conv').value.trim().toUpperCase();
-
   if (!name) { showToast('⚠ ' + (STATE.lang === 'fr' ? 'Entrez votre prénom.' : 'Enter your name.')); return; }
   if (!conv || conv.length < 2) { showToast('⚠ ' + (STATE.lang === 'fr' ? 'Code de session requis.' : 'Session code required.')); return; }
-
   STATE.name = name;
   STATE.conv = conv;
   if (!STATE.userId) STATE.userId = genUserId();
   save();
-
   document.getElementById('screen-setup').classList.remove('active');
   document.getElementById('screen-chat').classList.add('active');
   initChat();
@@ -1703,15 +1817,12 @@ function goSetup() {
 ═══════════════════════════════════════════ */
 function initChat() {
   const t = UI[STATE.lang];
-  const rtl = ['ar','fa'].includes(STATE.lang);
-  document.documentElement.setAttribute('dir', rtl ? 'rtl' : 'ltr');
-
-  document.getElementById('conv-badge').textContent  = STATE.conv;
-  document.getElementById('header-name').textContent = STATE.name;
-  document.getElementById('lang-dot').textContent    = STATE.lang.toUpperCase();
-  document.getElementById('empty-text').textContent  = t.emptyWait;
-  document.getElementById('status-label').textContent= t.statusWaiting;
-
+  document.documentElement.setAttribute('dir', ['ar','fa'].includes(STATE.lang) ? 'rtl' : 'ltr');
+  document.getElementById('conv-badge').textContent   = STATE.conv;
+  document.getElementById('header-name').textContent  = STATE.name;
+  document.getElementById('lang-dot').textContent     = STATE.lang.toUpperCase();
+  document.getElementById('empty-text').textContent   = t.emptyWait;
+  document.getElementById('status-label').textContent = t.statusWaiting;
   buildCategories();
   setupPolling();
 }
@@ -1737,9 +1848,7 @@ function selectCat(i) {
   STATE.selectedCat = i;
   STATE.selectedMsg = null;
   updateSendPreview();
-  document.querySelectorAll('.cat-pill').forEach((p,j) => {
-    p.classList.toggle('active', j===i);
-  });
+  document.querySelectorAll('.cat-pill').forEach((p,j) => p.classList.toggle('active', j===i));
   const cats = MSG[STATE.lang] || MSG.fr;
   const grid = document.getElementById('messages-grid');
   grid.innerHTML = '';
@@ -1776,65 +1885,132 @@ function updateSendPreview() {
 }
 
 /* ═══════════════════════════════════════════
+   SUPABASE — VALIDATION CONFIG
+═══════════════════════════════════════════ */
+function validateSupaConfig() {
+  const urlOk = typeof SUPA_URL === 'string'
+             && SUPA_URL.startsWith('https://')
+             && SUPA_URL.includes('.supabase.co');
+  const keyOk = typeof SUPA_KEY === 'string'
+             && SUPA_KEY.startsWith('eyJ')
+             && SUPA_KEY.length > 100;
+  if (!urlOk) return { ok: false, reason: 'SUPA_URL invalide — doit être https://xxxx.supabase.co' };
+  if (!keyOk) return { ok: false, reason: 'SUPA_KEY invalide — doit commencer par eyJ… (JWT anon)' };
+  return { ok: true };
+}
+
+/* ═══════════════════════════════════════════
    SUPABASE POLLING
 ═══════════════════════════════════════════ */
 function setupPolling() {
-  // Load Supabase SDK then connect
+  if (STATE.pollInterval) { clearInterval(STATE.pollInterval); STATE.pollInterval = null; }
+  showConnPanel();
+  setConnPanel('loading', 'Vérification de la configuration…');
+
+  // Fail fast if credentials look wrong
+  const check = validateSupaConfig();
+  if (!check.ok) {
+    setConnPanel('error_config', check.reason);
+    setStatus('waiting');
+    return;
+  }
+
+  setConnPanel('loading', 'Chargement du SDK Supabase…');
   if (!window.supabase) {
     const s = document.createElement('script');
     s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';
-    s.onload = () => connectAndPoll();
-    s.onerror = () => showToast('❌ Erreur chargement SDK.');
+    s.onload  = () => connectAndPoll();
+    s.onerror = () => {
+      setConnPanel('error_network', 'Impossible de charger le SDK Supabase (réseau / CDN inaccessible).');
+      setStatus('waiting');
+    };
     document.head.appendChild(s);
   } else {
     connectAndPoll();
   }
 }
 
-function connectAndPoll() {
+async function connectAndPoll() {
+  setConnPanel('loading', 'Connexion à Supabase…');
   try {
     STATE.supaClient = window.supabase.createClient(SUPA_URL, SUPA_KEY);
-    loadHistory();
-    // Poll every 3 seconds
-    STATE.pollInterval = setInterval(pollNewMessages, 3000);
+
+    // Probe: vraie requête pour valider les credentials et le réseau
+    const { data, error } = await STATE.supaClient
+      .from('ponti_messages')
+      .select('id')
+      .limit(1);
+
+    if (error) {
+      const msg = error.message || JSON.stringify(error);
+      const isAuth = error.code === 'PGRST301'
+                  || msg.toLowerCase().includes('jwt')
+                  || msg.toLowerCase().includes('apikey')
+                  || msg.toLowerCase().includes('invalid');
+      setConnPanel(isAuth ? 'error_config' : 'error_network',
+        (isAuth ? 'Authentification refusée : ' : 'Erreur Supabase : ') + msg);
+      setStatus('waiting');
+      return;
+    }
+
+    // ✅ OK
+    setConnPanel('connected', 'Base accessible · session ' + STATE.conv);
     setStatus('connected');
+    await loadHistory();
+    STATE.pollInterval = setInterval(pollNewMessages, 3000);
+
   } catch(e) {
-    showToast('❌ Supabase : ' + e.message);
+    setConnPanel('error_network', 'Exception réseau : ' + e.message);
+    setStatus('waiting');
   }
 }
 
 async function loadHistory() {
   try {
-    const { data } = await STATE.supaClient
+    const { data, error } = await STATE.supaClient
       .from('ponti_messages')
       .select('*')
       .eq('conv_id', STATE.conv)
       .order('created_at', { ascending: true })
       .limit(100);
+
+    if (error) {
+      showConnPanel();
+      setConnPanel('error_query', 'Historique : ' + error.message);
+      return;
+    }
     if (data && data.length) {
       data.forEach(row => renderMsg(row, false));
       STATE.lastMsgId = data[data.length - 1].id;
     }
-  } catch(e) { console.warn('loadHistory', e); }
+  } catch(e) {
+    showConnPanel();
+    setConnPanel('error_network', 'Historique inaccessible : ' + e.message);
+  }
 }
 
 async function pollNewMessages() {
   if (!STATE.supaClient) return;
   try {
-    let query = STATE.supaClient
+    let q = STATE.supaClient
       .from('ponti_messages')
       .select('*')
       .eq('conv_id', STATE.conv)
       .order('created_at', { ascending: true });
-    if (STATE.lastMsgId) query = query.gt('id', STATE.lastMsgId);
-    const { data } = await query;
+    if (STATE.lastMsgId) q = q.gt('id', STATE.lastMsgId);
+
+    const { data, error } = await q;
+    if (error) {
+      console.warn('poll error', error.message);
+      return; // silent — poll again next tick
+    }
     if (data && data.length) {
       data.forEach(row => {
         if (row.sender_id !== STATE.userId) renderMsg(row, true);
       });
       STATE.lastMsgId = data[data.length - 1].id;
     }
-  } catch(e) { console.warn('poll', e); }
+  } catch(e) { console.warn('poll exception', e.message); }
 }
 
 /* ═══════════════════════════════════════════
@@ -1843,32 +2019,36 @@ async function pollNewMessages() {
 async function sendMessage() {
   if (!STATE.selectedMsg) return;
   const msg = STATE.selectedMsg;
-
   const row = {
-    conv_id:   STATE.conv,
-    sender_id: STATE.userId,
+    conv_id:     STATE.conv,
+    sender_id:   STATE.userId,
     sender_name: STATE.name,
     sender_lang: STATE.lang,
-    msg_id:    msg.id,
-    msg_text:  msg.t
+    msg_id:      msg.id,
+    msg_text:    msg.t
   };
 
   // Optimistic render
   renderMsg({ ...row, created_at: new Date().toISOString() }, false, true);
 
-  // Clear selection
   STATE.selectedMsg = null;
   document.querySelectorAll('.msg-item').forEach(e => e.classList.remove('selected'));
   updateSendPreview();
 
-  if (STATE.supaClient) {
-    try {
-      await STATE.supaClient.from('ponti_messages').insert(row);
-    } catch(e) {
-      showToast('❌ Envoi échoué.');
+  if (!STATE.supaClient) { showToast('⏳ Connexion en cours…'); return; }
+
+  try {
+    const { error } = await STATE.supaClient.from('ponti_messages').insert(row);
+    if (error) {
+      const detail = error.message || JSON.stringify(error);
+      showToast('❌ Envoi échoué : ' + detail);
+      showConnPanel();
+      setConnPanel('error_query', 'Insert refusé : ' + detail);
+      console.error('insert error', error);
     }
-  } else {
-    showToast('⏳ Connexion en cours…');
+  } catch(e) {
+    showToast('❌ Envoi échoué : ' + e.message);
+    console.error('insert exception', e);
   }
 }
 
@@ -1876,13 +2056,12 @@ async function sendMessage() {
    RENDER MESSAGE
 ═══════════════════════════════════════════ */
 function renderMsg(row, animate, isMine) {
-  const area = document.getElementById('messages-area');
+  const area  = document.getElementById('messages-area');
   const empty = document.getElementById('empty-state');
   if (empty) empty.style.display = 'none';
 
   const mine = isMine !== undefined ? isMine : (row.sender_id === STATE.userId);
 
-  // Find equivalent in user's lang (if theirs)
   let equiv = null;
   if (!mine && row.msg_id) {
     const userCats = MSG[STATE.lang] || MSG.fr;
@@ -1919,7 +2098,7 @@ function renderMsg(row, animate, isMine) {
 }
 
 /* ═══════════════════════════════════════════
-   STATUS
+   STATUS DOT (header)
 ═══════════════════════════════════════════ */
 function setStatus(s) {
   const dot   = document.getElementById('status-dot');
@@ -1935,7 +2114,7 @@ function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  setTimeout(() => t.classList.remove('show'), 4000);
 }
 
 /* ═══════════════════════════════════════════
@@ -1950,8 +2129,9 @@ applyLang();
 </script>
 
 <!-- ══════════════════════════════════════════════
-     SUPABASE SQL — À exécuter dans l'éditeur SQL Supabase
+     SUPABASE SQL — reset complet
      
+     drop table if exists ponti_messages;
      create table ponti_messages (
        id          bigserial primary key,
        created_at  timestamptz default now(),
@@ -1962,13 +2142,6 @@ applyLang();
        msg_id      text,
        msg_text    text
      );
-     
-     -- RLS optionnel :
-     alter table ponti_messages enable row level security;
-     create policy "read all"   on ponti_messages for select using (true);
-     create policy "insert own" on ponti_messages for insert with check (true);
-     
-     -- Pas besoin d'activer le Realtime : on utilise du polling.
 ══════════════════════════════════════════════ -->
 </body>
 </html>
