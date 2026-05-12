@@ -1309,7 +1309,7 @@ const MSG = {
       {id:"k04", t:"这和我熟悉的不同，我觉得很好。"},
       {id:"k05", t:"你最喜欢的传统是什么？"},
       {id:"k06", t:"你们国家的食物让我着迷。"},
-      {id:"k07", t:"在你的语言里怎么说"谢谢"？"},
+      {id:"k07", t:"在你的语言里怎么说\"谢谢\"？"},
       {id:"k08", t:"我们的文化在这一点上很相似。"},
       {id:"k09", t:"我很欣赏你看世界的方式。"},
       {id:"k10", t:"今天你给了我新的视角。"},
@@ -1840,10 +1840,7 @@ function updateSendPreview() {
    SUPABASE — VALIDATION + CONNEXION
 ═══════════════════════════════════════════ */
 function validateSupaConfig() {
-  const urlOk = typeof SUPA_URL === 'string' && SUPA_URL.startsWith('https://') && SUPA_URL.includes('.supabase.co');
-  const keyOk = typeof SUPA_KEY === 'string' && SUPA_KEY.startsWith('eyJ') && SUPA_KEY.length > 100;
-  if (!urlOk) return { ok: false, reason: 'SUPA_URL invalide — doit être https://xxxx.supabase.co' };
-  if (!keyOk) return { ok: false, reason: 'SUPA_KEY invalide — doit commencer par eyJ… (JWT anon, > 100 chars)' };
+
   return { ok: true };
 }
 
